@@ -1,0 +1,2 @@
+class CryptographyWindow:
+    pass
