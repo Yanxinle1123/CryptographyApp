@@ -22,7 +22,7 @@ class CryptographyWindow{
   - instructions_button:EasyButton
 ==
   - settings_win:SettingsWindow
-  - instructins_win:InstructionsWindow
+  - instructions_win:InstructionsWindow
   - bind_key:ShortKey
   - cipher_map:Cipher
 }
