@@ -1,0 +1,2 @@
+class AutoEncryption:
+    pass

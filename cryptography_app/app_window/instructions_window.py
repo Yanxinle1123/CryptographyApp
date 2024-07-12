@@ -1,0 +1,2 @@
+class InstructionsWindow:
+    pass
