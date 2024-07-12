@@ -2,7 +2,7 @@ import tkinter as tk
 
 from LeleEasyTkinter.easy_auto_window import EasyAutoWindow
 from LeleEasyTkinter.easy_button import EasyButton
-from LeleEasyTkinter.easy_fade_animation import fade_in
+from LeleEasyTkinter.easy_fade_animation import fade_in, fade_out
 from LeleEasyTkinter.easy_frame import EasyFrame
 from LeleEasyTkinter.easy_label import EasyLabel
 from LeleEasyTkinter.easy_multi_text import EasyMultiText
@@ -19,7 +19,7 @@ class CryptographyWindow:
         pass
 
     def _quit_window(self):
-        pass
+        fade_out(self._window)
 
     def _settings(self):
         pass
