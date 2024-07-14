@@ -8,12 +8,20 @@ from LeleEasyTkinter.easy_label import EasyLabel
 from LeleEasyTkinter.easy_multi_text import EasyMultiText
 
 from cryptography_app.app_window.instructions_window import InstructionsWindow
-from cryptography_app.app_window.settings_window.settings_window import SettingsWindow
+from cryptography_app.app_window.settings_window.settings_window import SettingsWindow, check_and_create_file, \
+    resource_path
+
+check_and_create_file("instructions_settings.txt", "~", "开")
+instructions_settings = resource_path('instructions_settings.txt')
 
 
 class CryptographyWindow:
     def __init__(self):
         self._window = tk.Tk()
+        self._settings_num = 0
+        self._instructions_num = 0
+        self._settings_win = None
+        self._instructions_win = None
 
     def _encryption(self):
         pass
@@ -24,11 +32,29 @@ class CryptographyWindow:
     def _quit_window(self):
         fade_out(self._window)
 
+    def settings_num_sub(self):
+        self._settings_num -= 1
+
+    def instructions_num_sub(self):
+        self._instructions_num -= 1
+
     def _settings(self):
-        SettingsWindow(self._window).run()
+        if self._settings_num != 1:
+            self._settings_num += 1
+            # print(f"before settings_num = {self._settings_num}")
+            self._settings_win = SettingsWindow(self._window, self)
+            self._settings_win.run()
+            # print(f"after settings_num = {self._settings_num}")
+        else:
+            self._settings_win.center()
 
     def _instructions(self):
-        InstructionsWindow().run()
+        if self._instructions_num != 1:
+            self._instructions_num += 1
+            self._instructions_win = InstructionsWindow(self._window, self)
+            self._instructions_win.run()
+        else:
+            self._instructions_win.center()
 
     def _layout_pack(self):
         EasyAutoWindow(self._window, window_title="cryptography", minimum_value_x=640, minimum_value_y=870)
@@ -81,4 +107,10 @@ class CryptographyWindow:
     def run(self):
         self._layout_pack()
         fade_in(self._window)
+        with open(instructions_settings, 'r', encoding='utf-8') as file:
+            auto_open_instructions_window = file.read()
+        if auto_open_instructions_window == "开":
+            self._instructions()
+
+        self._window.protocol("WM_DELETE_WINDOW", self._quit_window)
         self._window.mainloop()
