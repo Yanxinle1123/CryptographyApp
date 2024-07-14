@@ -1,3 +1,5 @@
+import json
+import os
 import tkinter as tk
 
 from LeleEasyTkinter.easy_mobile_animation import move_window_to
@@ -22,3 +24,20 @@ def center_window(root):
     root.focus_set()
     root.lift()
     move_window_to(root, x, y, 100, 0.05)
+
+
+def config_write(config_map, json_file, indent=2):
+    with open(json_file, "w") as file:
+        json.dump(config_map, file, indent=indent)
+
+
+def config_read(json_file, default_config_map=None):
+    if default_config_map is None:
+        default_config_map = {}
+
+    if not os.path.exists(json_file):
+        with open(json_file, 'w') as file:
+            file.write(default_config_map)
+
+    with open(json_file, "r") as file:
+        return json.load(file)
