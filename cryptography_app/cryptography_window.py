@@ -30,6 +30,10 @@ class CryptographyWindow:
         pass
 
     def _quit_window(self):
+        if self._settings_num == 1:
+            self._settings_win.on_settings_window_close()
+        if self._instructions_num == 1:
+            self._instructions_win.on_instructions_window_close()
         fade_out(self._window)
 
     def settings_num_sub(self):

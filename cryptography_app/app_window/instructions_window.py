@@ -20,7 +20,7 @@ class InstructionsWindow:
     def center(self):
         center_window(self._window)
 
-    def _on_instructions_window_close(self):
+    def on_instructions_window_close(self):
         result = EasyWarningWindows(self._window, "是/否",
                                     "下次打开程序时是否需要自动打开此窗口？").show_warning()
         if result:
@@ -52,7 +52,7 @@ class InstructionsWindow:
 
         fade_in(self._window)
 
-        self._window.protocol("WM_DELETE_WINDOW", self._on_instructions_window_close)
+        self._window.protocol("WM_DELETE_WINDOW", self.on_instructions_window_close)
 
         # with open(shortcut_keys_settings, 'r', encoding='utf-8') as file:
         #     shortcut_keys_settings_value = file.read()

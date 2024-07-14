@@ -124,7 +124,7 @@ class SettingsWindow:
         #     else:
         #         file.write("关")
 
-    def _on_settings_window_close(self):
+    def on_settings_window_close(self):
         # file_list = []
         # obtain_list = other_settings.get_set()
         #
@@ -262,14 +262,14 @@ class SettingsWindow:
         EasyButton(f2, text="保存", expand=tk.YES, height=2, cmd=self._save_settings, side=tk.LEFT,
                    fill=tk.X)
 
-        EasyButton(f2, text="退出", expand=tk.YES, height=2, cmd=self._on_settings_window_close, side=tk.LEFT,
+        EasyButton(f2, text="退出", expand=tk.YES, height=2, cmd=self.on_settings_window_close, side=tk.LEFT,
                    fill=tk.X)
 
         EasyButton(f2, text="重置", expand=tk.YES, height=2, cmd=self._reset_settings, side=tk.LEFT,
                    fill=tk.X)
 
         fade_in(self._window)
-        self._window.protocol("WM_DELETE_WINDOW", self._on_settings_window_close)
+        self._window.protocol("WM_DELETE_WINDOW", self.on_settings_window_close)
 
         # with open(shortcut_keys_settings, 'r', encoding='utf-8') as file:
         #     shortcut_keys_settings_value = file.read()
