@@ -94,38 +94,28 @@ class SettingsWindow:
             self._parent_window.write_one_config("auto_save_settings2", False)
 
     def on_settings_window_close(self):
-        # file_list = []
-        # obtain_list = other_settings.get_set()
-        #
-        # with open(unsaved_reminder_settings, 'r', encoding='utf-8') as file:
-        #     unsaved_reminder_settings_value = file.read()
-        # if unsaved_reminder_settings_value == "开":
-        #     file_list.append("退出设置未保存时提醒")
-        #
-        # with open(error_prompt_settings, 'r', encoding='utf-8') as file:
-        #     error_prompt_settings_value = file.read()
-        # if error_prompt_settings_value == "开":
-        #     file_list.append("加密解密出错时弹出错误提示")
-        #
-        # with open(auto_save_settings, 'r', encoding='utf-8') as file:
-        #     auto_save_settings_value = file.read()
-        # if auto_save_settings_value == "开":
-        #     file_list.append("重置设置后自动保存")
-        #
-        # with open(shortcut_keys_settings, 'r', encoding='utf-8') as file:
-        #     shortcut_keys_settings_value = file.read()
-        # if shortcut_keys_settings_value == "开":
+        file_list = []
+        obtain_list = self._other_settings.get_set()
+
+        if self._parent_window.read_one_config("unsaved_reminder_settings"):
+            file_list.append("退出设置未保存时提醒")
+
+        if self._parent_window.read_one_config("error_prompt_settings"):
+            file_list.append("加密解密出错时弹出错误提示")
+
+        if self._parent_window.read_one_config("auto_save_settings"):
+            file_list.append("重置设置后自动保存")
+
+        # if self._parent_window.read_one_config("shortcut_keys_settings_value"):
         #     file_list.append("启用快捷键")
-        #
-        # with open(auto_save_settings2, 'r', encoding='utf-8') as file:
-        #     auto_save_settings2_value = file.read()
-        # if auto_save_settings2_value == "开":
-        #     file_list.append("自动保存设置")
-        #
-        # if unsaved_reminder_settings_value == "开" and obtain_list != file_list:
-        #     result = EasyWarningWindows(self._window, "是/否", "是否保存更改？").show_warning()
-        #     if result:
-        #         self._save_settings()
+
+        if self._parent_window.read_one_config("auto_save_settings2"):
+            file_list.append("自动保存设置")
+
+        if self._parent_window.read_one_config("unsaved_reminder_settings") and obtain_list != file_list:
+            result = EasyWarningWindows(self._window, "是/否", "是否保存更改？").show_warning()
+            if result:
+                self._save_settings()
         fade_out(self._window)
         self._parent_window.settings_num_sub()
 
