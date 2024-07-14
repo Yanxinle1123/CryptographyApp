@@ -5,11 +5,7 @@ from LeleEasyTkinter.easy_fade_animation import fade_in, fade_out
 from LeleEasyTkinter.easy_multi_text import EasyMultiText
 from LeleEasyTkinter.easy_warning_windows import EasyWarningWindows
 
-from cryptography_app.app_window.settings_window.settings_window import check_and_create_file, resource_path
 from cryptography_app.common.common import replace, center_window
-
-check_and_create_file("instructions_settings.txt", "~", "开")
-instructions_settings = resource_path('instructions_settings.txt')
 
 
 class InstructionsWindow:
@@ -24,11 +20,9 @@ class InstructionsWindow:
         result = EasyWarningWindows(self._window, "是/否",
                                     "下次打开程序时是否需要自动打开此窗口？").show_warning()
         if result:
-            with open(instructions_settings, 'w') as file:
-                file.write("开")
+            self._parent_window.write_one_config("auto_open_instructions_window", True)
         else:
-            with open(instructions_settings, 'w') as file:
-                file.write("关")
+            self._parent_window.write_one_config("auto_open_instructions_window", False)
         fade_out(self._window)
         self._parent_window.instructions_num_sub()
 

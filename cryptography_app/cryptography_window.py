@@ -8,11 +8,13 @@ from LeleEasyTkinter.easy_label import EasyLabel
 from LeleEasyTkinter.easy_multi_text import EasyMultiText
 
 from cryptography_app.app_window.instructions_window import InstructionsWindow
-from cryptography_app.app_window.settings_window.settings_window import SettingsWindow, check_and_create_file, \
-    resource_path
+from cryptography_app.app_window.settings_window.settings_window import SettingsWindow, resource_path
+from cryptography_app.common.common import config_read, config_write
 
-check_and_create_file("instructions_settings.txt", "~", "开")
-instructions_settings = resource_path('instructions_settings.txt')
+# check_and_create_file("instructions_settings.txt", "~", "开")
+# instructions_settings = resource_path('instructions_settings.txt')
+
+cryptography_settings_json = resource_path('cryptography_settings.json')
 
 
 class CryptographyWindow:
@@ -22,6 +24,16 @@ class CryptographyWindow:
         self._instructions_num = 0
         self._settings_win = None
         self._instructions_win = None
+        self._default_config_map = {
+            "algorithm_settings": "自动",
+            "unsaved_reminder_settings": True,
+            "error_prompt_settings": True,
+            "auto_save_settings": True,
+            "auto_save_settings2": True,
+            "enable_shortcut_keys": True,
+            "auto_open_instructions_window": True,
+        }
+        self._config = config_read(cryptography_settings_json, self._default_config_map)
 
     def _encryption(self):
         pass
@@ -35,6 +47,13 @@ class CryptographyWindow:
         if self._instructions_num == 1:
             self._instructions_win.on_instructions_window_close()
         fade_out(self._window)
+
+    def read_one_config(self, config_name):
+        return self._config[config_name]
+
+    def write_one_config(self, config_name, config_value):
+        self._config[config_name] = config_value
+        config_write(self._config, cryptography_settings_json)
 
     def settings_num_sub(self):
         self._settings_num -= 1
@@ -111,9 +130,7 @@ class CryptographyWindow:
     def run(self):
         self._layout_pack()
         fade_in(self._window)
-        with open(instructions_settings, 'r', encoding='utf-8') as file:
-            auto_open_instructions_window = file.read()
-        if auto_open_instructions_window == "开":
+        if self._config["auto_open_instructions_window"]:
             self._instructions()
 
         self._window.protocol("WM_DELETE_WINDOW", self._quit_window)

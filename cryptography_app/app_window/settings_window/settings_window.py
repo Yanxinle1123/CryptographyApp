@@ -22,35 +22,12 @@ def resource_path(relative_path):
     return file_path
 
 
-def check_and_create_file(filename, home_dir, write):
-    home_dir = os.path.expanduser(home_dir)
-    file_path = os.path.join(home_dir, filename)
-
-    if not os.path.exists(file_path):
-        with open(file_path, 'w') as file:
-            file.write(write)
-
-
-check_and_create_file("algorithm_settings.txt", "~", "自动")
-check_and_create_file("unsaved_reminder_settings.txt", "~", "开")
-check_and_create_file("error_prompt_settings.txt", "~", "开")
-check_and_create_file("auto_save_settings.txt", "~", "开")
-check_and_create_file("auto_save_settings2.txt", "~", "开")
-check_and_create_file("enable_shortcut_keys.txt", "~", "开")
-
-cryptography_settings = resource_path('algorithm_settings.txt')
-unsaved_reminder_settings = resource_path('unsaved_reminder_settings.txt')
-error_prompt_settings = resource_path('error_prompt_settings.txt')
-auto_save_settings = resource_path('auto_save_settings.txt')
-auto_save_settings2 = resource_path('auto_save_settings2.txt')
-shortcut_keys_settings = resource_path('enable_shortcut_keys.txt')
-
-
 class SettingsWindow:
     def __init__(self, window, parent_window):
         # print("SettingsWindow初始化！")
         self._parent_window = parent_window
         self._window = tk.Toplevel(window)
+        self._other_settings = None
 
     def _about_keys(self):
 
@@ -60,32 +37,25 @@ class SettingsWindow:
         center_window(self._window)
 
     def _save_settings(self, *args):
-        pass
-        # global algorithm, other_settings, instructions_num
-        #
-        # other_settings_set = other_settings.get_set()
-        #
-        # with open(cryptography_settings, 'w', encoding='utf-8') as file_local:
-        #     file_local.write(algorithm.get_combo_value())
-        #
-        # with open(unsaved_reminder_settings, 'w', encoding='utf-8') as file:
-        #     if "退出设置未保存时提醒" in other_settings_set:
-        #         file.write("开")
-        #     else:
-        #         file.write("关")
-        #
-        # with open(error_prompt_settings, 'w', encoding='utf-8') as file:
-        #     if "加密解密出错时弹出错误提示" in other_settings_set:
-        #         file.write("开")
-        #     else:
-        #         file.write("关")
-        #
-        # with open(auto_save_settings, 'w', encoding='utf-8') as file:
-        #     if "重置设置后自动保存" in other_settings_set:
-        #         file.write("开")
-        #     else:
-        #         file.write("关")
-        #
+        other_settings_set = self._other_settings.get_set()
+
+        self._parent_window.write_one_config("algorithm_settings", algorithm.get_combo_value())
+
+        if "退出设置未保存时提醒" in other_settings_set:
+            self._parent_window.write_one_config("unsaved_reminder_settings", True)
+        else:
+            self._parent_window.write_one_config("unsaved_reminder_settings", False)
+
+        if "加密解密出错时弹出错误提示" in other_settings_set:
+            self._parent_window.write_one_config("error_prompt_settings", True)
+        else:
+            self._parent_window.write_one_config("error_prompt_settings", False)
+
+        if "重置设置后自动保存" in other_settings_set:
+            self._parent_window.write_one_config("auto_save_settings", True)
+        else:
+            self._parent_window.write_one_config("auto_save_settings", False)
+
         # with open(shortcut_keys_settings, 'w', encoding='utf-8') as file:
         #     if "启用快捷键" in other_settings_set:
         #         file.write("开")
@@ -117,12 +87,11 @@ class SettingsWindow:
         #             instructions_window.unbind('<F1>')
         #             instructions_window.unbind('<q>')
         #             instructions_window.unbind('<Q>')
-        #
-        # with open(auto_save_settings2, 'w', encoding='utf-8') as file:
-        #     if "自动保存设置" in other_settings_set:
-        #         file.write("开")
-        #     else:
-        #         file.write("关")
+
+        if "自动保存设置" in other_settings_set:
+            self._parent_window.write_one_config("auto_save_settings2", True)
+        else:
+            self._parent_window.write_one_config("auto_save_settings2", False)
 
     def on_settings_window_close(self):
         # file_list = []
@@ -163,27 +132,25 @@ class SettingsWindow:
     def _reset_settings(self):
         global algorithm, other_settings, auto_save_settings_value
 
-        with open(auto_save_settings, 'r', encoding='utf-8') as file:
-            auto_save_settings_value = file.read()
+        auto_save_settings_value = self._parent_window.read_one_config("auto_save_settings")
 
         result = EasyWarningWindows(self._window, "是/否", "您确定要重置设置吗？").show_warning()
         if result:
             algorithm.set_combo_value('自动')
-            other_settings.set(
+            self._other_settings.set(
                 ["退出设置未保存时提醒", "加密解密出错时弹出错误提示", "重置设置后自动保存", "启用快捷键",
                  "自动保存设置"])
             if auto_save_settings_value == "开":
                 self._save_settings()
 
     def run(self):
-        global settings_window, algorithm, algorithm_settings, other_settings, \
+        global algorithm, algorithm_settings, other_settings, \
             unsaved_reminder_settings_value, error_prompt_settings_value, auto_save_settings_value, \
             shortcut_keys_settings_value, auto_save_settings_value2, command, window
 
         command = None
+        algorithm_settings = self._parent_window.read_one_config("algorithm_settings")
 
-        with open(cryptography_settings, 'r', encoding='utf-8') as file:
-            algorithm_settings = file.read()
         if algorithm_settings == '自动':
             algorithm_settings = 1
         elif algorithm_settings == 'AEAD':
@@ -203,31 +170,24 @@ class SettingsWindow:
         elif algorithm_settings == 'RC4':
             algorithm_settings = 9
 
-        with open(unsaved_reminder_settings, 'r', encoding='utf-8') as file:
-            unsaved_reminder_settings_value = file.read()
+        # unsaved_reminder_settings_value = self._parent_window.read_one_config("unsaved_reminder_settings")
+        # error_prompt_settings_value = self._parent_window.read_one_config("error_prompt_settings")
+        auto_save_settings_value = self._parent_window.read_one_config("auto_save_settings")
+        auto_save_settings_value2 = self._parent_window.read_one_config("auto_save_settings2")
 
-        with open(error_prompt_settings, 'r', encoding='utf-8') as file:
-            error_prompt_settings_value = file.read()
-
-        with open(auto_save_settings, 'r', encoding='utf-8') as file:
-            auto_save_settings_value = file.read()
-
-        with open(auto_save_settings2, 'r', encoding='utf-8') as file:
-            auto_save_settings_value2 = file.read()
-
-        with open(shortcut_keys_settings, 'r', encoding='utf-8') as file:
-            shortcut_keys_settings_value = file.read()
+        # with open(shortcut_keys_settings, 'r', encoding='utf-8') as file:
+        #     shortcut_keys_settings_value = file.read()
 
         other_settings_set = []
-        if unsaved_reminder_settings_value == "开":
+        if self._parent_window.read_one_config("unsaved_reminder_settings"):
             other_settings_set.append("退出设置未保存时提醒")
-        if error_prompt_settings_value == "开":
+        if self._parent_window.read_one_config("error_prompt_settings"):
             other_settings_set.append("加密解密出错时弹出错误提示")
-        if auto_save_settings_value == "开":
+        if self._parent_window.read_one_config("auto_save_settings"):
             other_settings_set.append("重置设置后自动保存")
-        if shortcut_keys_settings_value == "开":
-            other_settings_set.append("启用快捷键")
-        if auto_save_settings_value2 == "开":
+        # if shortcut_keys_settings_value == "开":
+        #     other_settings_set.append("启用快捷键")
+        if self._parent_window.read_one_config("auto_save_settings2"):
             other_settings_set.append("自动保存设置")
             command = self._save_settings
 
@@ -250,11 +210,11 @@ class SettingsWindow:
         EasyLabel(f12, text="由于程序会根据密钥自动检测加密的算法来匹配解密的算法, 所以无需设置解密的算法",
                   side=tk.LEFT, font_size=12)
 
-        other_settings = EasyCheckButton(f13, text=["退出设置未保存时提醒", "加密解密出错时弹出错误提示",
-                                                    "重置设置后自动保存", "启用快捷键", "自动保存设置"],
-                                         set_text_list=other_settings_set, master_win=self._window, expand=True,
-                                         fill=tk.Y,
-                                         cmd=command)
+        self._other_settings = EasyCheckButton(f13, text=["退出设置未保存时提醒", "加密解密出错时弹出错误提示",
+                                                          "重置设置后自动保存", "启用快捷键", "自动保存设置"],
+                                               set_text_list=other_settings_set, master_win=self._window, expand=True,
+                                               fill=tk.Y,
+                                               cmd=command)
 
         EasyButton(f14, text="关于快捷键", cmd=self._about_keys, side=tk.LEFT, width=10, height=1,
                    font_size=12)

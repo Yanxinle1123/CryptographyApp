@@ -27,17 +27,29 @@ def center_window(root):
 
 
 def config_write(config_map, json_file, indent=2):
+    # print(f"config_write: before config_map={config_map}\njson_file={json_file}")
+
     with open(json_file, "w") as file:
         json.dump(config_map, file, indent=indent)
 
+    # print(f"config_write: after config_map={config_map}\njson_file={json_file}")
 
-def config_read(json_file, default_config_map=None):
+
+def config_read(json_file, default_config_map=None, indent=2):
+    # print(f"config_read: before json_file={json_file}\ndefault_config_map={default_config_map}")
+
     if default_config_map is None:
         default_config_map = {}
 
     if not os.path.exists(json_file):
         with open(json_file, 'w') as file:
-            file.write(default_config_map)
+            json.dump(default_config_map, file, indent=indent)
 
     with open(json_file, "r") as file:
-        return json.load(file)
+        result = json.load(file)
+    # print(f"config_read: after json_file={json_file}\ndefault_config_map={default_config_map}")
+    return result
+
+
+if __name__ == '__main__':
+    print(config_read("test.json", {"a": "b"}))
