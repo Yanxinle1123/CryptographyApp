@@ -7,6 +7,9 @@ from LeleEasyTkinter.easy_frame import EasyFrame
 from LeleEasyTkinter.easy_label import EasyLabel
 from LeleEasyTkinter.easy_multi_text import EasyMultiText
 
+from cryptography_app.app_window.instructions_window import InstructionsWindow
+from cryptography_app.app_window.settings_window.settings_window import SettingsWindow
+
 
 class CryptographyWindow:
     def __init__(self):
@@ -22,10 +25,10 @@ class CryptographyWindow:
         fade_out(self._window)
 
     def _settings(self):
-        pass
+        SettingsWindow(self._window).run()
 
     def _instructions(self):
-        pass
+        InstructionsWindow().run()
 
     def _layout_pack(self):
         EasyAutoWindow(self._window, window_title="cryptography", minimum_value_x=640, minimum_value_y=870)
