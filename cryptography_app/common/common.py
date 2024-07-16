@@ -8,11 +8,12 @@ from LeleEasyTkinter.easy_mobile_animation import move_window_to
 
 def log(func):
     def wrapper(*args, **kwargs):
+        print(f"调用函数 {func.__name__} 前的普通参数: {args}, 字典参数: {kwargs}")
         start = time.time()
-        print(f"调用函数 {func.__name__} 前的普通参数={args}, 字典参数={kwargs}")
         ret = func(*args, **kwargs)
         cost = time.time() - start
-        print(f"调用函数 {func.__name__} 后的普通参数={args}, 字典参数={kwargs}, 耗时: {cost:.2f}s")
+        print(f"调用函数 {func.__name__} 后的普通参数: {args}, 字典参数: {kwargs}\n耗时: {cost:.5f}s")
+        print(f"函数 {func.__name__} 的返回值: {ret}\n")
         return ret
 
     return wrapper
@@ -48,7 +49,6 @@ def config_write(config_map, json_file, indent=2):
     # print(f"config_write: after config_map={config_map}\njson_file={json_file}")
 
 
-@log
 def config_read(json_file, default_config_map=None, indent=2):
     # print(f"config_read: before json_file={json_file}\ndefault_config_map={default_config_map}")
 
@@ -64,6 +64,5 @@ def config_read(json_file, default_config_map=None, indent=2):
     # print(f"config_read: after json_file={json_file}\ndefault_config_map={default_config_map}")
     return result
 
-
-if __name__ == '__main__':
-    print(config_read("test.json", {"a": "b"}))
+# if __name__ == '__main__':
+#     print(config_read("test.json", {"a": "b"}))

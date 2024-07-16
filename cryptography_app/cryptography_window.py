@@ -48,9 +48,11 @@ class CryptographyWindow:
             self._instructions_win.on_instructions_window_close()
         fade_out(self._window)
 
+    # @log
     def read_one_config(self, config_name):
         return self._config[config_name]
 
+    # @log
     def write_one_config(self, config_name, config_value):
         self._config[config_name] = config_value
         config_write(self._config, cryptography_settings_json)
