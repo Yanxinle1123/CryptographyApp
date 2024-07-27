@@ -1,11 +1,14 @@
 import tkinter as tk
 
 from LeleEasyTkinter.easy_auto_window import EasyAutoWindow
+from LeleEasyTkinter.easy_auto_window_size import auto_size
 from LeleEasyTkinter.easy_button import EasyButton
 from LeleEasyTkinter.easy_fade_animation import fade_in, fade_out
 from LeleEasyTkinter.easy_frame import EasyFrame
 from LeleEasyTkinter.easy_label import EasyLabel
 from LeleEasyTkinter.easy_multi_text import EasyMultiText
+from LeleEasyTkinter.easy_popup_animation import animate_resize_window
+from PIL import ImageTk, Image
 
 from cryptography_app.app_window.instructions_window import InstructionsWindow
 from cryptography_app.app_window.settings_window.settings_window import SettingsWindow, resource_path
@@ -15,6 +18,7 @@ from cryptography_app.common.common import config_read, config_write
 # instructions_settings = resource_path('instructions_settings.txt')
 
 cryptography_settings_json = resource_path('cryptography_settings.json')
+logo = resource_path('logo.ico')
 
 
 class CryptographyWindow:
@@ -130,8 +134,20 @@ class CryptographyWindow:
                    cmd=self._instructions)
 
     def run(self):
+        icon_image = ImageTk.PhotoImage(Image.open(logo))
+        self._window.iconphoto(True, icon_image)
+
+        window_width_value, window_height_value, _, _ = auto_size(self._window)
+
+        EasyAutoWindow(self._window, window_title="cryptography", minimum_value_x=636, minimum_value_y=834,
+                       window_width_value=636,
+                       window_height_value=834)
+
+        fade_in(self._window, ms=1)
+        animate_resize_window(self._window, window_width_value, window_height_value, 120, "ordinary", False)
+
         self._layout_pack()
-        fade_in(self._window)
+
         if self._config["auto_open_instructions_window"]:
             self._instructions()
 
