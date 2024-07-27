@@ -3,6 +3,7 @@ import tkinter as tk
 from LeleEasyTkinter.easy_auto_window import EasyAutoWindow
 from LeleEasyTkinter.easy_fade_animation import fade_in, fade_out
 from LeleEasyTkinter.easy_multi_text import EasyMultiText
+from LeleEasyTkinter.easy_popup_animation import animate_resize_window
 from LeleEasyTkinter.easy_warning_windows import EasyWarningWindows
 
 from cryptography_app.common.common import replace, center_window
@@ -37,14 +38,14 @@ class InstructionsWindow:
                              "择加密解密的算法。\n\n\n注意事项: 请不要全屏显示窗口, 全屏模式下, 显示会有一些问题。\n\n\n快捷键: 您可"
                              "以通过按q键来关闭程序, 您也可以通过按command键加逗号来打开设置窗口, 您还可以按F1键来打开使用方法窗口。")
 
-        EasyAutoWindow(self._window, window_title="使用方法", window_width_value=600,
-                       window_height_value=400,
+        EasyAutoWindow(self._window, window_title="使用方法", window_width_value=230, window_height_value=170,
                        minimum_value_x=230, minimum_value_y=170)
 
         instructions_box = EasyMultiText(self._window, expand=tk.YES, fill=tk.BOTH)
         replace(instructions_box, instructions_text)
 
-        fade_in(self._window)
+        fade_in(self._window, ms=2)
+        animate_resize_window(self._window, 600, 400, 200, "ordinary", False)
 
         self._window.protocol("WM_DELETE_WINDOW", self.on_instructions_window_close)
 
