@@ -37,7 +37,7 @@ def center_window(root):
 
     root.focus_set()
     root.lift()
-    move_window_to(root, x, y, 100, 0.05)
+    move_window_to(root, x, y, 150, 0.2, way="ordinary")
 
 
 def config_write(config_map, json_file, indent=2):

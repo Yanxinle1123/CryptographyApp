@@ -144,7 +144,7 @@ class CryptographyWindow:
                        window_height_value=834)
 
         fade_in(self._window, ms=1)
-        animate_resize_window(self._window, window_width_value, window_height_value, 120, "ordinary", False)
+        animate_resize_window(self._window, window_width_value, window_height_value, 150, "ordinary", False)
 
         self._layout_pack()
 
